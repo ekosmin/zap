@@ -1,8 +1,10 @@
 ///<reference path="phaser/typescript/phaser.d.ts"/>
-///<reference path="Hex.ts"/>
+///<reference path="HexMap.ts"/>
 module Main {
 
     export class Level extends Phaser.State {
+
+        public hexMap: HexMap;
 
         private background: Phaser.Sprite;
 
@@ -11,8 +13,7 @@ module Main {
             this.background.width = this.game.world.width;
             this.background.height = this.game.world.height;
 
-            var group: Phaser.Group = this.game.add.group();
-            group.add(new Hex(this, 100, 100, 64));
+            this.hexMap = new HexMap(this, 64);
         }
 
     }
