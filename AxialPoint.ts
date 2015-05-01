@@ -37,6 +37,10 @@ module Main {
             }
         }
 
+        public hash(): string {
+            return "(" + this.x + ", " + this.y + ")";
+        }
+
         private shift(deltaX: number, deltaY: number): AxialPoint {
             return new AxialPoint(this.x + deltaX, this.y + deltaY);
         }

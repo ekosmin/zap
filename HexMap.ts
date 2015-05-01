@@ -6,9 +6,11 @@ module Main {
 
     export class HexMap {
 
-        private map: Map<AxialPoint, Hex> = new Map<AxialPoint, Hex>();
+        private static ROWS: number = 5;
+        private static COLUMNS: number = 9;
 
         private group: Phaser.Group;
+        private dict: { [hash: string]: Hex; } = {};
 
         constructor(level: Level) {
             this.group = level.add.group();
@@ -16,27 +18,27 @@ module Main {
             this.addHexes(level);
         }
 
-        public getHexes(): Phaser.Group {
-            return this.group;
+        public add(hex: Hex): void {
+            this.dict[hex.axialPosition.hash()] = hex;
+            this.group.add(hex);
+        }
+
+        public getHex(point: AxialPoint) {
+            return this.dict[point.hash()];
         }
 
         private addHexes(level: Level) {
-            for (var row: number = 0; row < 5; row++) {
+            for (var row: number = 0; row < HexMap.ROWS; row++) {
                 var heightApart: number = Math.sqrt(3) * Hex.SIZE;
                 var lastHex: Hex = new Hex(level.game, new Phaser.Point(100, 100 + row * heightApart),
                     new AxialPoint(0, -row));
-                this.add(lastHex, new AxialPoint(0, row));
+                this.add(lastHex);
 
-                for (var col: number = 1; col < 6; col++) {
+                for (var col: number = 1; col < HexMap.COLUMNS; col++) {
                     lastHex = this.getNextHex(lastHex, col);
-                    this.add(lastHex, lastHex.axialPosition);
+                    this.add(lastHex);
                 }
             }
-        }
-
-        public add(hex: Hex, point: AxialPoint): void {
-            this.map.set(point, hex);
-            this.group.add(hex);
         }
 
         /**
@@ -49,11 +51,12 @@ module Main {
             var widthApart: number = 3/2 * Hex.SIZE;
             var heightApart: number = Math.sqrt(3)/2 * Hex.SIZE;
             var nextOrigin: Phaser.Point, nextAxialPoint: AxialPoint;
+
             if (column % 2 == 0) {
-                nextOrigin = hex.pixelOrigin.add(widthApart, -heightApart);
+                nextOrigin = new Phaser.Point(hex.pixelOrigin.x + widthApart, hex.pixelOrigin.y - heightApart);
                 nextAxialPoint = hex.axialPosition.getPointInDirection(Direction.UPRIGHT);
             } else {
-                nextOrigin = hex.pixelOrigin.add(widthApart, heightApart);
+                nextOrigin = new Phaser.Point(hex.pixelOrigin.x + widthApart, hex.pixelOrigin.y + heightApart);
                 nextAxialPoint = hex.axialPosition.getPointInDirection(Direction.DOWNRIGHT);
             }
             return new Hex(hex.game, nextOrigin, nextAxialPoint);
