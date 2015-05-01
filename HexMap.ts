@@ -10,21 +10,21 @@ module Main {
 
         private group: Phaser.Group;
 
-        constructor(level: Level, size: number) {
+        constructor(level: Level) {
             this.group = level.add.group();
 
-            this.addHexes(level, size);
+            this.addHexes(level);
         }
 
         public getHexes(): Phaser.Group {
             return this.group;
         }
 
-        private addHexes(level: Level, size: number) {
+        private addHexes(level: Level) {
             for (var row: number = 0; row < 5; row++) {
-                var heightApart: number = Math.sqrt(3) * size;
+                var heightApart: number = Math.sqrt(3) * Hex.SIZE;
                 var lastHex: Hex = new Hex(level.game, new Phaser.Point(100, 100 + row * heightApart),
-                    new AxialPoint(0, -row), size);
+                    new AxialPoint(0, -row));
                 this.add(lastHex, new AxialPoint(0, row));
 
                 for (var col: number = 1; col < 6; col++) {
@@ -46,8 +46,8 @@ module Main {
          * @returns {Hex} the Hex in the next column
          */
         private getNextHex(hex: Hex, column: number): Hex {
-            var widthApart: number = 3/2 * hex.size;
-            var heightApart: number = Math.sqrt(3)/2 * hex.size;
+            var widthApart: number = 3/2 * Hex.SIZE;
+            var heightApart: number = Math.sqrt(3)/2 * Hex.SIZE;
             var nextOrigin: Phaser.Point, nextAxialPoint: AxialPoint;
             if (column % 2 == 0) {
                 nextOrigin = hex.pixelOrigin.add(widthApart, -heightApart);
@@ -56,7 +56,7 @@ module Main {
                 nextOrigin = hex.pixelOrigin.add(widthApart, heightApart);
                 nextAxialPoint = hex.axialPosition.getPointInDirection(Direction.DOWNRIGHT);
             }
-            return new Hex(hex.game, nextOrigin, nextAxialPoint, hex.size);
+            return new Hex(hex.game, nextOrigin, nextAxialPoint);
         }
 
     }

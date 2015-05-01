@@ -13,7 +13,7 @@ module Main {
             this.background.width = this.game.world.width;
             this.background.height = this.game.world.height;
 
-            this.hexMap = new HexMap(this, 64);
+            this.hexMap = new HexMap(this);
         }
 
     }
